@@ -6,6 +6,15 @@ defineProps<{
     counter: number
 }>()
 
+function returnSomethingInside(){
+    return "something Inside"
+}
+
+defineExpose({
+    returnSomethingInside
+})
+
+
 </script>
 
 <template>
