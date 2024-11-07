@@ -1,20 +1,15 @@
-import random
+combinations = {
+    "Royal Flush": 0,
+    "Straight Flush": 0,
+    "Four of a Kind": 0,
+    "Full House": 0,
+    "Flush": 0,
+    "Straight": 0,
+    "Three of a Kind": 0,
+    "Two Pair": 0,
+    "One Pair": 0,
+    "High Card": 0
+}
 
 
-def lottoziehung(ziehungen = 6,pool = 45):
-    zahlen = []
-    for x in range(ziehungen):
-        ziehung = random.randint(1,pool)
-        if ziehung not in zahlen:
-            zahlen.append(ziehung)
-        else:
-            x =-1
-    return zahlen
-
-
-
-anz = 5
-pool = 52
-for i in range(100):
-    print(lottoziehung(anz,pool))
-
+print(combinations.items())

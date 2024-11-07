@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import TestComponent from "@/components/TestComponent.vue";
 import { ref, useTemplateRef } from 'vue';
+import { computed } from "vue";
 let count = ref(0)
-let inputValue = ref()
+let inputValue = ref("Def")
 
 const TestComponentRef = useTemplateRef('tc')
 
@@ -13,6 +14,10 @@ const myData = [
   {prop: "4"},
   {prop: "5"},
 ]
+
+const myDataLength = computed(() => {
+  return myData.length
+})
 
 function printSomething(){
   
