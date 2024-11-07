@@ -88,8 +88,7 @@ def determine_combination(hand):
     return "High Card"
 
 
-   
-if __name__ == "__main__":
+def main():
     for _ in range(how_many):
         deck = set_deck()
         hand = draw_hand(deck)
@@ -103,9 +102,11 @@ if __name__ == "__main__":
             df.to_excel(writer)
         print(f"{combination}: {amount} ({amount/how_many*100:.9f}%)")
     
-    
-   
     print("Ziehungen: ", how_many)
 
+
+
+if __name__ == "__main__":
+    main()
 
     
