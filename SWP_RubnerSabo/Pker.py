@@ -4,26 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-colours = ['Kreuz', 'Pik', 'Herz', 'Karo']
-card_types = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Bube', 'Dame', 'König', 'Ass']
-
-combinations = {
-    "Royal Flush": 0,
-    "Straight Flush": 0,
-    "Four of a Kind": 0,
-    "Full House": 0,
-    "Flush": 0,
-    "Straight": 0,
-    "Three of a Kind": 0,
-    "Two Pair": 0,
-    "One Pair": 0,
-    "High Card": 0
-}
-
-how_many = 100000
-handsize = 5
-
-def set_deck():
+def set_deck(colours, card_types):
     return [(colour, cardtype) for colour in colours for cardtype in card_types]
 
 def draw_cards(deck):
@@ -31,7 +12,7 @@ def draw_cards(deck):
     deck.remove(cards_drawn)
     return cards_drawn
 
-def draw_hand(deck):
+def draw_hand(deck,handsize):
     return [draw_cards(deck) for _ in range(handsize)]
 #   return [random.choice(deck) for _ in range(handsize)]
 
@@ -89,9 +70,28 @@ def determine_combination(hand):
 
 
 def main():
+
+    colours = ['Kreuz', 'Pik', 'Herz', 'Karo']
+    card_types = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Bube', 'Dame', 'König', 'Ass']
+    combinations = {
+        "Royal Flush": 0,
+        "Straight Flush": 0,
+        "Four of a Kind": 0,
+        "Full House": 0,
+        "Flush": 0,
+        "Straight": 0,
+        "Three of a Kind": 0,
+        "Two Pair": 0,
+        "One Pair": 0,
+        "High Card": 0
+    }
+    print('wie viele Ziehungen?: ')
+    how_many = int(input())
+  
     for _ in range(how_many):
-        deck = set_deck()
-        hand = draw_hand(deck)
+        handsize = 5
+        deck = set_deck(colours,card_types)
+        hand = draw_hand(deck,handsize)
         combination = determine_combination(hand)
         combinations[combination] += 1
 
@@ -100,7 +100,7 @@ def main():
         df = pd.DataFrame([[combinations]], columns=["Combination"]) 
         with pd.ExcelWriter("/home/florian/Documents/GithubRepos/SWP/SWP_5BHWII_Prandstetter/SWP_RubnerSabo/poker.xlsx") as writer:
             df.to_excel(writer)
-        print(f"{combination}: {amount} ({amount/how_many*100:.9f}%)")
+        print(f"{combination}: {amount} ({amount/how_many*100:.2f}%)")
     
     print("Ziehungen: ", how_many)
 
