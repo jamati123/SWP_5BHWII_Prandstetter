@@ -1,8 +1,17 @@
 
-for x in range(0, 10):
-    print("hello world")
-    if x == 5:
-        print("x is 5")
-    else: 
-        print("x is not 5")
+a = [1,2,3,2,5]
+
+for x in a:
+    if a.count(x) == 2:
+        print(2)
+        break
+
+y = "hi there"
+
+try:
+    print(y)
+except NameError:
+    print("not defined")
+except:
+    print("something else went wrong")
 
