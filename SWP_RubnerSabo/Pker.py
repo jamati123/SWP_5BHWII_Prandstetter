@@ -5,6 +5,7 @@ import pandas as pd
 import decorators 
 import time
 
+
 def set_deck(colours, card_types):
     return [(colour, cardtype) for colour in colours for cardtype in card_types]
 
@@ -40,44 +41,51 @@ def determine_combination(hand):
     sorted_hand = order(hand)
     sorted_values = [set_range(card[1]) for card in sorted_hand]
 
-    if royal_flush(hand):
-        return "Royal Flush"
+    if hand.__len__() is not 1:
 
-    elif len(set(colour_in_hand)) == 1 and sorted_values == list(range(sorted_values[0], sorted_values[0] + 5)):
-        return "Straight Flush"
+        if royal_flush(hand):
+            return "Royal Flush"
+
+   
+        elif len (set(colour_in_hand)) == 1 and sorted_values == list(range(sorted_values[0], sorted_values[0] + 5)):
+            return "Straight Flush"
+         
     
-    elif 4 in counter_cards.values():
-        return "Four of a Kind"
+        elif 4 in counter_cards.values():
+            return "Four of a Kind"
 
-    elif 2 in counter_cards.values() and 3 in counter_cards.values():
-        return "Full House"
+        elif 2 in counter_cards.values() and 3 in counter_cards.values():
+            return "Full House"
 
-    elif len(set(colour_in_hand)) == 1:
-        return "Flush"
+        elif len(set(colour_in_hand)) == 1:
+            return "Flush"
 
-    elif sorted_values == list(range(sorted_values[0], sorted_values[0] + 5)):
-        return "Straight"
+        elif sorted_values == list(range(sorted_values[0], sorted_values[0] + 5)):
+            return "Straight"
 
-    elif 3 in counter_cards.values():
-        return "Three of a Kind"
+        elif 3 in counter_cards.values():
+            return "Three of a Kind"
 
-    elif list(counter_cards.values()).count(2) == 2:
-        return "Two Pair"
+        elif list(counter_cards.values()).count(2) == 2:
+          return "Two Pair"
 
-    elif 2 in counter_cards.values():
-        return "One Pair"
+        elif 2 in counter_cards.values():
+            return "One Pair"
     
-    return "High Card"
+        return "High Card"
+    raise TypeError ("only above 1")
 
-def timer(func):
+
+def timer(func):    
     def wrapper_timer(*args,**kwargs):
         start = time.time()
         value = func(*args, **kwargs)
         end = time.time()
         run_time = end - start
-        print(f" {run_time} secs")
+        print(f" {run_time} milliseconds of your life")
         return value
     return wrapper_timer
+
 
 
 @timer
