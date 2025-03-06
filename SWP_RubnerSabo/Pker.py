@@ -2,7 +2,8 @@ import random
 from collections import Counter
 import matplotlib.pyplot as plt
 import pandas as pd
-
+import decorators 
+import time
 
 def set_deck(colours, card_types):
     return [(colour, cardtype) for colour in colours for cardtype in card_types]
@@ -68,7 +69,18 @@ def determine_combination(hand):
     
     return "High Card"
 
+def timer(func):
+    def wrapper_timer(*args,**kwargs):
+        start = time.time()
+        value = func(*args, **kwargs)
+        end = time.time()
+        run_time = end - start
+        print(f" {run_time} secs")
+        return value
+    return wrapper_timer
 
+
+@timer
 def main():
 
     colours = ['Kreuz', 'Pik', 'Herz', 'Karo']
@@ -97,9 +109,7 @@ def main():
 
     for combination, amount in combinations.items():
         
-        df = pd.DataFrame([[combinations]], columns=["Combination"]) 
-        with pd.ExcelWriter("/home/florian/Documents/GithubRepos/SWP/SWP_5BHWII_Prandstetter/SWP_RubnerSabo/poker.xlsx") as writer:
-            df.to_excel(writer)
+       
         print(f"{combination}: {amount} ({amount/how_many*100:.2f}%)")
     
     print("Ziehungen: ", how_many)

@@ -1,13 +1,14 @@
 <template>
   <div>
     <h1>Todo List</h1>
-    <input v-model="newTodoTitle" placeholder="Title" />
-    <input v-model="newTodoText" placeholder="Text" />
+    <input v-model="newTodoTask" placeholder="Task" />
+    <input v-model="newTodoDue" type="datetime-local" placeholder="Due Date" />
     <button @click="addTodo">Add Todo</button>
     <ul>
       <li v-for="todo in todos" :key="todo.id">
-        <h3>{{ todo.title }}</h3>
-        <p>{{ todo.text }}</p>
+        <input type="checkbox" v-model="todo.done" @change="updateTodo(todo)" />
+        <h3>{{ todo.task }}</h3>
+        <p>Due: {{ todo.due || 'No due date' }}</p>
         <button @click="deleteTodo(todo.id)">Delete</button>
       </li>
     </ul>
@@ -15,61 +16,88 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, watch } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue';
+import axios from 'axios';
 
 interface Todo {
-  id: number
-  title: string
-  text: string
+  id: number;
+  task: string;
+  done: boolean;
+  due?: string; // Optionales Fälligkeitsdatum
 }
 
 export default defineComponent({
   name: 'TodoComponent',
   setup() {
-    const todos = ref<Todo[]>([])
-    const newTodoTitle = ref('')
-    const newTodoText = ref('')
+    const todos = ref<Todo[]>([]);
+    const newTodoTask = ref('');
+    const newTodoDue = ref('');
 
-    const loadTodos = () => {
-      const savedTodos = localStorage.getItem('todos')
-      if (savedTodos) {
-        todos.value = JSON.parse(savedTodos)
+    // Todos vom Server laden
+    const loadTodos = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/todos');
+        todos.value = response.data;
+      } catch (error) {
+        console.error('Error loading todos:', error);
       }
-    }
+    };
 
-    const saveTodos = () => {
-      localStorage.setItem('todos', JSON.stringify(todos.value))
+    // Neues Todo hinzufügen
+    const addTodo = async () => {
+  if (newTodoTask.value) {
+    const newTodo: Omit<Todo, 'id'> = {
+      task: newTodoTask.value,
+      done: false,
+      due: newTodoDue.value ? new Date(newTodoDue.value).toISOString() : null,
+    };
+    try {
+      const response = await axios.post('http://localhost:3000/todos', newTodo);
+      todos.value.push(response.data); // Add the returned todo to the list
+      newTodoTask.value = '';
+      newTodoDue.value = '';
+    } catch (error) {
+      console.error('Error adding todo:', error);
     }
+  }
+};
 
-    const addTodo = () => {
-      if (newTodoTitle.value && newTodoText.value) {
-        const newTodo: Todo = {
-          id: Date.now(),
-          title: newTodoTitle.value,
-          text: newTodoText.value,
-        }
-        todos.value.push(newTodo)
-        newTodoTitle.value = ''
-        newTodoText.value = ''
+
+    // Todo-Status aktualisieren
+    const updateTodo = async (todo: Todo) => {
+      try {
+        await axios.put(`http://localhost:3000/todos?id=eq.${todo.id}`, {
+          done: todo.done,
+          task: todo.task,
+          due: todo.due,  
+        });
+      } catch (error) {
+        console.error('Error updating todo:', error);
       }
-    }
+    };
 
-    const deleteTodo = (id: number) => {
-      todos.value = todos.value.filter(todo => todo.id !== id)
-    }
+    // Todo löschen
+    const deleteTodo = async (id: number) => {
+      try {
+        await axios.delete(`http://localhost:3000/todos/${id}`);
+        todos.value = todos.value.filter(todo => todo.id !== id);
+      } catch (error) {
+        console.error('Error deleting todo:', error);
+      }
+    };
 
-    onMounted(loadTodos)
-    watch(todos, saveTodos, { deep: true })
+    onMounted(loadTodos);
 
     return {
       todos,
-      newTodoTitle,
-      newTodoText,
+      newTodoTask,
+      newTodoDue,
       addTodo,
+      updateTodo,
       deleteTodo,
-    }
+    };
   },
-})
+});
 </script>
 
 <style scoped>

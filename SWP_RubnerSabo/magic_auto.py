@@ -23,6 +23,15 @@ class Auto:
     def __gt__(self,other):
         return self.ps > other.ps
     
+class Ferrari(Auto):
+    def __init__(self, ps, felgen):
+        super().__init__(ps)
+        self.felgen = felgen 
+
+class Fiat(Auto):
+    def __init__(self, ps, hubraum):
+        super().__init__(ps)
+        self.hubraum = hubraum 
 
 
 def main():
@@ -44,6 +53,26 @@ def main():
     #__gt__
     print(auto1 < auto2)     
 
+    auto1 = Ferrari(200,'Krasser Scheiß')
+    auto2 = Fiat(200, '200ccm')
+
+    print('__________________________________________')     
+
+
+     #__add__
+    print(auto1 + auto2)     
+    #__sub__
+    print(auto1 - auto2)     
+    #__truediv__
+    print(auto1 / auto2)     
+    #__mul__
+    print(auto1 * auto2)        
+    #__eq__
+    print(auto1 == auto2)     
+    #__lt__
+    print(auto1 > auto2)     
+    #__gt__
+    print(auto1 < auto2)   
 
 if __name__ == "__main__":
     main()
