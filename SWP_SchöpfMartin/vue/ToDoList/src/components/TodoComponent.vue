@@ -45,22 +45,23 @@ export default defineComponent({
 
     // Neues Todo hinzufügen
     const addTodo = async () => {
-  if (newTodoTask.value) {
-    const newTodo: Omit<Todo, 'id'> = {
-      task: newTodoTask.value,
-      done: false,
-      due: newTodoDue.value ? new Date(newTodoDue.value).toISOString() : null,
+      if (newTodoTask.value) {
+
+        const newTodo: Omit<Todo, 'id'> = {
+          task: newTodoTask.value,
+          done: false,
+          due: newTodoDue.value ? new Date(newTodoDue.value).toISOString() : null,
+        };
+      try {
+          const response = await axios.post('http://localhost:3000/todos', newTodo);
+          todos.value.push(response.data); // Add the returned todo to the list
+          newTodoTask.value = '';
+          newTodoDue.value = '';
+      } catch (error) {
+          console.error('Error adding todo:', error);
+        }
+      }
     };
-    try {
-      const response = await axios.post('http://localhost:3000/todos', newTodo);
-      todos.value.push(response.data); // Add the returned todo to the list
-      newTodoTask.value = '';
-      newTodoDue.value = '';
-    } catch (error) {
-      console.error('Error adding todo:', error);
-    }
-  }
-};
 
 
     // Todo-Status aktualisieren
@@ -69,7 +70,7 @@ export default defineComponent({
         await axios.put(`http://localhost:3000/todos?id=eq.${todo.id}`, {
           done: todo.done,
           task: todo.task,
-          due: todo.due,  
+          due: todo.due,
         });
       } catch (error) {
         console.error('Error updating todo:', error);
